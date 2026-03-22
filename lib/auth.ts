@@ -1,16 +1,11 @@
 import type { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import GoogleProvider from 'next-auth/providers/google'
 import { connectDB } from './mongodb'
 import User from '@/models/User'
 
 export const authOptions: NextAuthOptions = {
   session: { strategy: 'jwt' },
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -39,11 +34,6 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async signIn({ user, account }) {
-      if (account?.provider === 'google') {
-        await connectDB()
-        const exists = await User.findOne({ email: user.email })
-        if (!exists) await User.create({ name: user.name, email: user.email, password: Math.random().toString(36) })
-      }
       return true
     },
   },
