@@ -12,7 +12,7 @@ export default async function ViewEntryPage({ params }: { params: { id: string }
   if (!session) notFound()
 
   await connectDB()
-  const entry = await Entry.findOne({ _id: params.id, userId: session.user.id }).lean()
+  const entry = await Entry.findOne({ _id: params.id, userId: session.user.id }).lean() as any
   if (!entry) notFound()
 
   return (
